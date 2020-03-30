@@ -16,6 +16,8 @@ const App = () => {
   });
 
   const [socket, setSocket] = useState(null);
+  const [showPlayerList, setShowPlayerList] = useState(false);
+  const [showActionPanel, setShowActionPanel] = useState(false);
 
   const location = useLocation();
 
@@ -75,14 +77,15 @@ const App = () => {
 
   const placeCards = (cards) => {
     socket.emit('place', cards);
+    setShowActionPanel(false);
   };
 
   const dealTo = (player) => {
     socket.emit('deal', player.id);
   };
 
-  const giveCard = (player) => {
-    socket.emit('give-card', player.id);
+  const requestCard = (player, i) => {
+    socket.emit('request-card', player.id, i);
   };
 
   const returnPlacement = (index) => {
@@ -91,13 +94,16 @@ const App = () => {
 
   return (
     <div className="main">
-      <div className="player-list-panel">
+      <div className={`player-list-panel ${showPlayerList ? 'open' : ''}`}>
         <PlayerList
           players={gameState.players.filter(({ id }) => (id !== playerId))}
           dealer={dealer}
           onDealTo={dealTo}
-          onClickCards={giveCard}
+          onClickCard={requestCard}
         />
+        <div className="player-list-title" onClick={() => setShowPlayerList(s => !s)}>
+          {`Player List (${gameState.players.length})`}
+        </div>
       </div>
       <div className="placements">
         <Board
@@ -105,9 +111,12 @@ const App = () => {
           onClick={dealer ? returnPlacement : (() => { })}
         />
       </div>
-      <div className="action-panel">
+      <div className={`action-panel ${showActionPanel ? 'open' : ''}`}>
         {dealer ? (
           <div className="current-player">
+            <div className="action-panel-title" onClick={() => setShowActionPanel(s => !s)}>
+              Dealer Actions
+            </div>
             <div className="current-player-name">
               <a href="/" onClick={dealer ? ((e) => e.preventDefault()) : handleNameChange}>
                 <PlayerName id={playerId} player={currentPlayer} />
@@ -126,6 +135,9 @@ const App = () => {
           </div>
         ) : (
           <div className="current-player">
+            <div className="action-panel-title" onClick={() => setShowActionPanel(s => !s)}>
+              {`Your Hand (${(currentPlayer && currentPlayer.hand.length) || 0} card${((currentPlayer && currentPlayer.hand.length) || 0) === 1 ? '' : 's'})`}
+            </div>
             <div className="current-player-name">
               <a href="/" onClick={handleNameChange}>
                 <PlayerName id={playerId} player={currentPlayer} />

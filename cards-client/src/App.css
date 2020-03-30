@@ -1,18 +1,18 @@
 html, body {
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 
 .main {
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
 }
 
 .player-list-panel, .action-panel {
   width: 100vw;
-  height: 33vh;
+  height: 85vh;
+  background-color: white;
 }
 
 .placements {
@@ -37,8 +37,7 @@ a:visited {
 }
 
 .player-list {
-  width: 100vw;
-  height: 33vh;
+  flex: 1;
   display: flex;
   flex-direction: column;
   overflow: scroll;
@@ -65,17 +64,13 @@ a:visited {
   opacity: 0;
 }
 
-.card:not(:first-child) {
-  margin-left: -5%;
-}
-
 .player-card-list {
   text-align: center;
 }
 
 .current-player {
   width: 100vw;
-  height: 33vh;
+  height: 85vh;
   overflow: scroll;
 }
 
@@ -111,10 +106,6 @@ a:visited {
   width: 15%;
 }
 
-.player-card:not(:first-child) {
-  margin-left: -10%;
-}
-
 .placement-container {
   padding: 2%;
 }
@@ -125,8 +116,76 @@ a:visited {
   filter: brightness(85%);
 }
 
+.player-list-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 5vh;
+  border-bottom: 1px solid rgb(200, 200, 200);
+  border-bottom-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+}
+
+.action-panel-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 5vh;
+  border-top: 1px solid rgb(200, 200, 200);
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+}
+
+@media (orientation: portrait) {
+  .placements {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 5vh;
+    bottom: 5vh;
+  }
+
+  .action-panel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 95vh;
+    transition: 0.25s;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+    background-color: white;
+  }
+
+  .player-list-panel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 95vh;
+    transition: 0.25s;
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+    background-color: white;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .action-panel.open {
+    top: 15vh;
+  }
+
+  .player-list-panel.open {
+    bottom: 15vh;
+  }
+
+  .card {
+    width: 15%;
+  }
+}
+
 @media (orientation: landscape) {
   .main {
+    display: flex;
     flex-direction: row;
   }
 
@@ -143,5 +202,9 @@ a:visited {
   .current-player {
     width: 33vw;
     height: 100vh;
+  }
+
+  .action-panel-title, .player-list-title {
+    display: none;
   }
 }
