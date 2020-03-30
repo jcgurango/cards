@@ -143,7 +143,7 @@ const App = () => {
         />
         <div className="player-list-title" onClick={() => setShowPlayerList(s => !s)}>
           <span className="panel-title-text">
-            {`Player List (${gameState.players.length})`}
+            {`Player List (${gameState.players.length - (dealer ? 0 : 1)})`}
           </span>
           <FontAwesomeIcon icon={showPlayerList ? faChevronUp : faChevronDown} />
         </div>

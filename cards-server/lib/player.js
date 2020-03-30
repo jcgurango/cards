@@ -73,7 +73,7 @@ class Player {
 
             // Pass it from my hand to their hand.
             request.player.hand.push(request.card);
-            this.hand.splice(this.hand.indexOf(request.card));
+            this.hand.splice(this.hand.indexOf(request.card), 1);
 
             // Remove any other requests that have that card.
             this.cardRequests = this.cardRequests.filter(({ card }) => card !== request.card);
