@@ -5,7 +5,7 @@ const Board = ({
     placements,
     onClick = () => { },
 }) => (
-    placements.reverse().map(({ cards, player }, index) => (
+    placements.slice().reverse().map(({ cards, player }, index) => (
         <div className="placement-container" key={`placement-${index}`} onClick={() => onClick(placements.length - index - 1)}>
             <b>{player.name}</b>
             <div className="player-card-list">
