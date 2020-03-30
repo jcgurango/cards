@@ -1,0 +1,147 @@
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
+.main {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.player-list-panel, .action-panel {
+  width: 100vw;
+  height: 33vh;
+}
+
+.placements {
+  flex: 1;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.current-player-name {
+  padding: 0.25rem;
+  text-align: center;
+}
+
+a {
+  text-decoration: none;
+  color: blue;
+}
+
+a:visited {
+  color: blue;
+}
+
+.player-list {
+  width: 100vw;
+  height: 33vh;
+  display: flex;
+  flex-direction: column;
+  overflow: scroll;
+}
+
+.player-list-player {
+  padding: 0.25rem;
+}
+
+.card-list {
+  width: 100%;
+}
+
+.card-list-text {
+  width: 10%;
+  text-align: center;
+}
+
+.card {
+  width: 10%;
+}
+
+.card.ghost {
+  opacity: 0;
+}
+
+.card:not(:first-child) {
+  margin-left: -5%;
+}
+
+.player-card-list {
+  text-align: center;
+}
+
+.current-player {
+  width: 100vw;
+  height: 33vh;
+  overflow: scroll;
+}
+
+.action-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.action-list.player {
+  margin-top: 3vh;
+}
+
+.action-list > button {
+  margin-bottom: 2%;
+  padding: 4% 8%;
+  width: 100%;
+}
+
+.dealer-player-action-list {
+  display: flex;
+  flex-direction: row;
+  justify-content: stretch;
+}
+
+.dealer-player-action-list > button {
+  margin-bottom: 2%;
+  padding: 4% 8%;
+  width: 100%;
+}
+
+.player-card {
+  width: 15%;
+}
+
+.player-card:not(:first-child) {
+  margin-left: -10%;
+}
+
+.placement-container {
+  padding: 2%;
+}
+
+.player-card.selected {
+  position: relative;
+  top: 3vmin;
+  filter: brightness(85%);
+}
+
+@media (orientation: landscape) {
+  .main {
+    flex-direction: row;
+  }
+
+  .player-list-panel, .action-panel {
+    width: 33vw;
+    height: 100vh;
+  }
+
+  .player-list {
+    width: 33vw;
+    height: 100vh;
+  }
+
+  .current-player {
+    width: 33vw;
+    height: 100vh;
+  }
+}
