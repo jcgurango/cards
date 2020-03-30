@@ -12,6 +12,15 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+if (process.env.BUILD_FOLDER) {
+    app.use(express.static(process.env.BUILD_FOLDER));
+
+    app.get('/*', (req, res) => {
+        res.sendFile(`${process.env.BUILD_FOLDER}/index.html`);
+    });
+}
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
