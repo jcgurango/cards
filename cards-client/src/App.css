@@ -119,7 +119,9 @@ a:visited {
 .player-list-title {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  padding-left: 5vw;
+  padding-right: 5vw;
   height: 5vh;
   border-bottom: 1px solid rgb(200, 200, 200);
   border-bottom-left-radius: 1rem;
@@ -129,11 +131,36 @@ a:visited {
 .action-panel-title {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  padding-left: 5vw;
+  padding-right: 5vw;
   height: 5vh;
   border-top: 1px solid rgb(200, 200, 200);
   border-top-left-radius: 1rem;
   border-top-right-radius: 1rem;
+}
+
+.modal-container {
+  background-color: rgba(0, 0, 0, 0.2);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  background-color: white;
+  padding: 5vmin;
+  text-align: center;
+}
+
+.modal-title {
+  font-weight: bold;
 }
 
 @media (orientation: portrait) {

@@ -1,4 +1,5 @@
 const io = require('socket.io');
+const randomString = require('random-string');
 const Room = require('./room');
 
 class Player {
@@ -12,6 +13,7 @@ class Player {
         this.connected = false;
         this.sockets = [];
         this.hand = [];
+        this.cardRequests = [];
         this.name = `#${id}`;
     }
 
@@ -30,6 +32,77 @@ class Player {
      */
     emit(event, ...args) {
         this.sockets.forEach((s) => s.emit(event, ...args));
+    }
+
+    /**
+     * Called when another player requests a card from this player.
+     * 
+     * @param {Player} player 
+     * @param {Number} index 
+     */
+    requestCard(player, index) {
+        if (this.cardRequests.find(({ player: p }) => (p.id === player.id))) {
+            throw new Error('You can only request one card at a time.');
+        }
+
+        if (this.hand.length <= index) {
+            throw new Error('Card no longer exists.');
+        }
+
+        this.cardRequests.push({
+            id: randomString(),
+            player,
+            card: this.hand[index],
+        });
+
+        this.report();
+    }
+
+    /**
+     * Accepts a card request.
+     * 
+     * @param {string} id 
+     */
+    acceptCardRequest(id) {
+        // Find the request.
+        const requestIndex = this.cardRequests.findIndex(({ id: i }) => i === id);
+
+        if (requestIndex > -1) {
+            // Remove it.
+            const [request] = this.cardRequests.splice(requestIndex, 1);
+
+            // Pass it from my hand to their hand.
+            request.player.hand.push(request.card);
+            this.hand.splice(this.hand.indexOf(request.card));
+
+            // Remove any other requests that have that card.
+            this.cardRequests = this.cardRequests.filter(({ card }) => card !== request.card);
+
+            // Report back to the requester.
+            request.player.emit('card-request-accepted', this.name);
+        }
+
+        this.report();
+    }
+
+    /**
+     * Rejects a card request.
+     * 
+     * @param {string} id 
+     */
+    rejectCardRequest(id) {
+        // Find the request.
+        const requestIndex = this.cardRequests.findIndex(({ id: i }) => i === id);
+
+        if (requestIndex > -1) {
+            // Remove it.
+            const [request] = this.cardRequests.splice(requestIndex, 1);
+
+            // Report back to the requester.
+            request.player.emit('card-request-rejected', this.name);
+        }
+
+        this.report();
     }
 
     /**
@@ -64,25 +137,30 @@ class Player {
             this.report();
         });
 
-        socket.on('give-card', (playerId) => {
-            if (this.hand.length > 0) {
-                // Find the player.
-                const player = this.room.players.find(({ id }) => id === playerId);
+        socket.on('request-card', (playerId, index, callback) => {
+            // Find the player.
+            const player = this.room.players.find(({ id }) => id === playerId);
 
-                if (player) {
-                    // Pick a random card from the hand.
-                    const cardIndex = Math.floor(Math.random() * this.hand.length);
+            if (player) {
+                const card = player.hand[index];
 
-                    // Remove it from the hand.
-                    const [card] = this.hand.splice(cardIndex, 1);
-
-                    // Place it in the other person's hand.
-                    player.hand.push(card);
+                if (card) {
+                    try {
+                        player.requestCard(this, index);
+                        callback();
+                    } catch (e) {
+                        callback({
+                            message: e.message || 'Error',
+                        });
+                    }
                 }
-
-                this.report();
             }
+
+            this.report();
         });
+
+        socket.on('accept-card-request', this.acceptCardRequest.bind(this));
+        socket.on('reject-card-request', this.rejectCardRequest.bind(this));
 
         // Mark the player as not connected on disconnection.
         socket.on('disconnect', () => {
@@ -96,12 +174,16 @@ class Player {
      * Returns the data to show only to the player clients.
      */
     getPrivateState() {
-        const { id, name, hand } = this;
+        const { id, name, hand, cardRequests } = this;
 
         return {
             id,
             name,
             hand,
+            cardRequests: cardRequests.map(({ player, ...rest }) => ({
+                ...rest,
+                player: player.getPublicState(),
+            })),
         };
     }
 
