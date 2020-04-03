@@ -13,7 +13,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-if (process.env.BUILD_FOLDER) {
+if (process.env.PROXY) {
+    
+} else if (process.env.BUILD_FOLDER) {
     app.use(express.static(process.env.BUILD_FOLDER));
 
     app.get('/*', (req, res) => {

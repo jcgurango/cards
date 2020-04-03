@@ -6,3 +6,7 @@ services:
       context: .
     ports:
       - 8080:3000
+    volumes:
+      - ./cards-client:/client
+      - ./cards-server:/server
+    entrypoint: bash -c "(cd /server && npm start) & (cd /client && PORT=5000 npm start)"
